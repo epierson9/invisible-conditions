@@ -1,11 +1,11 @@
-# invisible_conditions
-Methods for quantifying prevalence of underreported medical conditions like IPV. 
+# invisible-conditions
+Public release of the underreported conditions relative prevalence code.
 
 ### Download data and generate semi-synthetic datasets.
 
 > 1. Download data from [MIMIC-IV](https://physionet.org/content/mimiciv/0.4/) and [MIMIC-IV ED](https://physionet.org/content/mimic-iv-ed/1.0/). You will need to complete training in order to access both.
-> 2. Set paths for MIMIC-IV and MIMIC-IV ED in the file ./MIMIC_notebooks/mimic_paths.py
-> 3. Run each of the following notebooks ("Generate Random Semi-Simulated Dat", "Generate Endometriosis Correlation Data", "Generate IPV Semi-Simulated Data") to generate the datasets required for the semi-synthetic experiments.
+> 2. Set paths for MIMIC-IV and MIMIC-IV ED in the file ```./MIMIC_notebooks/mimic_paths.py```
+> 3. Run each of the following notebooks ("Generate Random Semi-Simulated Data", "Generate Endometriosis Correlation Data", "Generate IPV Semi-Simulated Data", under ```./MIMIC_notebooks```) to generate the semi-synthetic datasets.
 
 ### Install required libraries.
 
@@ -23,4 +23,6 @@ Methods for quantifying prevalence of underreported medical conditions like IPV.
 > ./run_semisimulated_experiments.sh
 > ./run_robustness_experiments.sh
 > ```
-> You can generate each of the figures and tables in the paper using the notebooks in the ```./relative_prevalence_benchmark/``` folder. Let us know if you run into any issues by emailing divyas@mit.edu or filing a Github issue! 
+> You can generate each of the figures and tables in the paper using the notebooks in ```./relative_prevalence_benchmark/```. 
+
+Email divyas@mit.edu if you run into any issues!
