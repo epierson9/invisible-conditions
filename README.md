@@ -1,4 +1,4 @@
-# invisible_conditions
+# invisible-conditions
 Public release of the underreported conditions relative prevalence code.
 
 ### Download data and generate semi-synthetic datasets.
