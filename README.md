@@ -5,7 +5,7 @@ Public release of the underreported conditions relative prevalence code.
 
 > 1. Download data from [MIMIC-IV](https://physionet.org/content/mimiciv/0.4/) and [MIMIC-IV ED](https://physionet.org/content/mimic-iv-ed/1.0/). You will need to complete training in order to access both.
 > 2. Set paths for MIMIC-IV and MIMIC-IV ED in the file ```./MIMIC_notebooks/mimic_paths.py```
-> 3. Run each of the following notebooks ("Generate Random Semi-Simulated Dat", "Generate Endometriosis Correlation Data", "Generate IPV Semi-Simulated Data", under ```./MIMIC_notebooks```) to generate the semi-synthetic datasets.
+> 3. Run each of the following notebooks ("Generate Random Semi-Simulated Data", "Generate Endometriosis Correlation Data", "Generate IPV Semi-Simulated Data", under ```./MIMIC_notebooks```) to generate the semi-synthetic datasets.
 
 ### Install required libraries.
 
