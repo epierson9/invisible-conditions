@@ -1,5 +1,5 @@
 # invisible_conditions
-Methods for quantifying prevalence of underreported medical conditions like IPV. 
+Public release of the underreported conditions relative prevalence code.
 
 ### Download data and generate semi-synthetic datasets.
 
