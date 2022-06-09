@@ -38,37 +38,34 @@ IPV_RELATED_KWS = list(set([kw for kw_set in KW_SETS for kw in kw_set]))
 
 T74_CODES = ['T74']
 T76_CODES = ['T76']
-Y_CODES = ['Y070', 'Y071', 'Y074']
+Y_CODES = ['Y070', 'Y079']
 
 # E9673 = Perpetrator of child and adult abuse, by spouse or partner
 # E9671 = perpetrator of child/adult abuse, by unspecified person
 # E9670 = perpetrator of child/adult abuse, by father stepfather etc.
 # V6111 = Counseling for partner abuse
-GOLD_STANDARD_IPV_CODES_1 = ['E9673', 'E9671', 'E9670','V6111']
+GOLD_STANDARD_IPV_CODES_1 = ['E9672', 'E9673', 'E9671', 'E9670', 'E9679', 'V6111']
 
 # Adding in Adult physical abuse related codes
 # 99581 =  Adult physical abuse
+# 99585 = Other adult abuse or neglect
 # T7411XA = Adult physical abuse, confirmed, initial encounter
 # T7411XD = Adult physical abuse, confirmed, subsequent
 # T7411XS = Adult physical abuse, confirmed, sequela
 
-GOLD_STANDARD_IPV_CODES_2 = ['E9673', 'E9671', 'E9670','V6111',
-                             '99581', 'T7411XA', 'T7411XD', 'T7411XS']
+GOLD_STANDARD_IPV_CODES_2 = GOLD_STANDARD_IPV_CODES_1 + ['99581', '99585', 'T7411XA', 'T7411XD', 'T7411XS']
 
 # Adding in Other adult maltreatment (unspecified). 'Maltreatment' encompasses physical, sexual, and emotional abuse.
 # We exclude sexual and emotional abuse.
 
-GOLD_STANDARD_IPV_CODES_3 = ['E9673', 'E9671', 'E9670','V6111', 
-                             '99581', 'T7411XA', 'T7411XD', 'T7411XS', 
-                             'T7491XA', 'T7491XD', 'T7491XS']
-# Adding in suspected codes
-# T7611XA = Adult physical abuse, suspected, initial encounter
-GOLD_STANDARD_IPV_CODES_4 = ['E9673', 'E9671', 'E9670','V6111', 
-                             '99581', 'T7411XA', 'T7411XD', 'T7411XS', # Adult physical abuse:  confirmed
-                             'T7491XA', 'T7491XD', 'T7491XS', # Adult maltreatment (other): confirmed
-                             'T7611', 'T7611XA', 'T7611XD', 'T7611XS', # Adult physical abuse: suspected
-                             'T7692', 'T7692XA', 'T7692XD', 'T7692XS']  # Adult maltreatment (other): suspected 
+GOLD_STANDARD_IPV_CODES_3 = GOLD_STANDARD_IPV_CODES_2 + ['99580'] 
 
+# Adding in suspected codes
+# T7611X* = Adult physical abuse, suspected, initial encounter
+
+GOLD_STANDARD_IPV_CODES_4 = GOLD_STANDARD_IPV_CODES_3 + [ 'T7611', 'T7611XA', 'T7611XD', 'T7611XS']  
+
+### Suspicious symptoms 
 
 SUSPICIOUS_SYMPTOMS_ICD9_CODE_PREFIXES = ['95901', '7842', '9108', '9100', '920']
 SUSPICIOUS_SYMPTOMS_ICD10_CODE_PREFIXES = ['E963', '9947', # Assault by strangulation, asphyxiation  or strangulation

@@ -46,14 +46,6 @@ p_y_diff_opts = [0, .1, .2, .3]
 lamda_opts = [0]
 std, n_to_sample_g1, n_to_sample_g2, n_attributes = 16, 10000, 10000, 5
 
-
-# Specifying which set of experiments to run
-
-# Enumerating the experiment configurations
-# Relevant experiment params = c1, c2, n_dims, std, n_examples, group_gap
-# TODO: Add iterations over gap between decision rules?
-# call it decision_rule_diff
-
 all_combinations = list(product(c2_opts, separability_opts, group_gap_opts, p_y_diff_opts))
 
 # Creating group configurations based on each experiment config
@@ -76,6 +68,7 @@ for lamda in lamda_opts:
                        'n_groups': n_groups, 'n_attributes': n_attributes,
                        'p_y_diff': p_y_diff} 
         expmt_configs.append((expmt_config, g1_config, g2_config))
+
 # Iterating over all experiments
 result_dicts = []
 for expmt_config, g1_config, g2_config in tqdm(expmt_configs):

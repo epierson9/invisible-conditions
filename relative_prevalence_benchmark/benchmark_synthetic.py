@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import average_precision_score, roc_auc_score
 
 from sarpu.PUmodels import LogisticRegressionPU
 from simulation_helpers import create_gap_1d, create_gap_nd
@@ -18,6 +17,8 @@ from simulation_helpers import separable_decision_rule_nd, inseparable_decision_
 from eval_fs import eval_relative_prior
 from method import train_relative_estimator, get_loss
 from baselines import cdmm, supervised_rel_prior, sar_em_rel_prior, scar_km2_rel_prior
+
+from baseline_params import penalty, solver, fit_intercept
 
 from gpu_utils import restrict_GPU_pytorch
 restrict_GPU_pytorch(sys.argv[3])
@@ -85,7 +86,8 @@ for lamda in lamda_opts:
                         'separability_assumption': separability_assumption, 
                         'labeling_frequency_g1': c1, 'labeling_frequency_g2': c2, 
                         'group_gap': group_gap, 'lamda': lamda,
-                       'n_groups': n_groups, 'n_attributes': n_attributes} 
+                       'n_groups': n_groups, 'n_attributes': n_attributes, 
+                       'optimizer': 'Adam'} 
         expmt_configs.append((expmt_config, g1_config, g2_config))
 
 ### Iterating over all experiments
@@ -159,27 +161,26 @@ for expmt_config, g1_config, g2_config in tqdm(expmt_configs):
         g2_test_idxs = x_test[:,1] == 1
 
         classification_attributes = [i + g1_config['n_groups'] for i in range(g1_config['n_attributes'])]
+        classification_model1 = classification_model_type(fit_intercept=fit_intercept,
+                                                         penalty=penalty, solver=solver)
+        
+        classification_model2 = classification_model_type(fit_intercept=fit_intercept,
+                                                         penalty=penalty, solver=solver)
 
         ### Apply each method to the synthetic data
         if method == 'ours':
-            f_model, losses = train_relative_estimator(x_train, s_train, 
-                                                       expmt_config, n_epochs=10000)
+            f_model, losses, info = train_relative_estimator(x_train, s_train, 
+                                                             x_val, s_val,
+                                                             expmt_config, n_epochs=10000)
 
             pred_rel_prior, pred_g1_prior, pred_g2_prior = eval_relative_prior(x_test, f_model)
 
-            # Evaluate validation set metrics 
-            s_preds = torch.squeeze(f_model(torch.Tensor(x_val).cuda()))
-            val_loss = get_loss(s_val, s_preds)
-            s_preds = torch.squeeze(s_preds).detach().cpu()
-            auc = roc_auc_score(s_val, s_preds)
-            auprc = average_precision_score(s_val, s_preds)
-
-            info = {'auprc': auprc, 'auc': auc,  'val_loss': val_loss}
-
+           
         elif method == 'supervised':
             results = supervised_rel_prior(x_train[g1_train_idxs], 
                                            x_train[g2_train_idxs],
-                                           y1_train, y2_train, x_test, g1_config)
+                                           y1_train, y2_train, x_test, g1_config,
+                                           classification_model1, classification_model2)
 
             pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
@@ -187,7 +188,8 @@ for expmt_config, g1_config, g2_config in tqdm(expmt_configs):
             results = supervised_rel_prior(x_train[g1_train_idxs], 
                                            x_train[g2_train_idxs],
                                            s_train[g1_train_idxs],
-                                           s_train[g2_train_idxs], x_test, g1_config)
+                                           s_train[g2_train_idxs], x_test, g1_config,
+                                           classification_model1, classification_model2)
 
             pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
@@ -195,7 +197,8 @@ for expmt_config, g1_config, g2_config in tqdm(expmt_configs):
             results = sar_em_rel_prior(x_train_norm[g1_train_idxs],
                                        x_train_norm[g2_train_idxs],
                                        s_train[g1_train_idxs],
-                                       s_train[g2_train_idxs], x_test_norm, g1_config)
+                                       s_train[g2_train_idxs], x_test_norm, g1_config,
+                                           classification_model1, classification_model2)
 
             pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
