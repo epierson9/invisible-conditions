@@ -1,11 +1,18 @@
-# invisible-conditions
-Public release of the underreported conditions relative prevalence code.
+# invisible_conditions
+Methods for quantifying prevalence of underreported medical conditions like IPV. 
 
-### Download data and generate semi-synthetic datasets.
-
+### Download health data and generate datasets.
 > 1. Download data from [MIMIC-IV](https://physionet.org/content/mimiciv/0.4/) and [MIMIC-IV ED](https://physionet.org/content/mimic-iv-ed/1.0/). You will need to complete training in order to access both.
-> 2. Set paths for MIMIC-IV and MIMIC-IV ED in the file ```./MIMIC_notebooks/mimic_paths.py```
-> 3. Run each of the following notebooks ("Generate Random Semi-Simulated Data", "Generate Endometriosis Correlation Data", "Generate IPV Semi-Simulated Data", under ```./MIMIC_notebooks```) to generate the semi-synthetic datasets.
+> 2. Set paths for MIMIC-IV and MIMIC-IV ED in the file ```./MIMIC_notebooks/mimic_paths.py```.
+> 3. Generate  each of the semi-synthetic dataset by running each of the following notebooks: "Generate Random Semi-Simulated Data.ipynb", "Generate Endometriosis Correlation Data.ipynb", "Generate IPV Semi-Simulated Data.ipynb", all under ```./MIMIC_notebooks```.
+> 4. Generate the real dataset by running the following notebook: "./MIMIC_notebooks/Generate Real IPV Data.ipynb".
+
+### Download content moderation data and preprocess dataset.
+> 1. Download the pre-trained model, trained via ERM, from [this link](https://worksheets.codalab.org/rest/bundles/0xb820ddc4bdc44c0d9e298c0eb51335a3/contents/blob/best_model.pth). Store "best_model.pth" in the ```./WILDS_notebooks``` folder.
+> 2. Generate the CivilComments dataset by running the following notebook: "./WILDS_notebooks/Preprocess CivilComments Dataset.ipynb".
+
+### Update global paths for saving results, models, and figures.
+>  1. Set global paths to the results, models, and figure directories in ```relative_prevalence_benchmark/paths.py```.
 
 ### Install required libraries.
 
@@ -14,15 +21,26 @@ Public release of the underreported conditions relative prevalence code.
 > 3. Create a conda environment and install the packages in requirements.txt by running 
 > ``` conda create -n <environment-name> --file requirements.txt ```
 
-### Reproduce experiments.
+### Reproduce experiments in main text.
 
 > Run the following: 
 > ```
 > cd relative_prevalence_benchmark
-> ./run_simulated_experiments.sh
-> ./run_semisimulated_experiments.sh
-> ./run_robustness_experiments.sh
+> ./run_synthetic_expmts.sh
+> ./run_semisynthetic_expmts.sh
+> ./run_mimic_expmts.sh
+> ./run_cmod_expmts.sh
 > ```
 > You can generate each of the figures and tables in the paper using the notebooks in ```./relative_prevalence_benchmark/```. 
 
+### Reproduce experiments in supplement.
+  
+> Run the following: 
+> ```
+> cd relative_prevalence_benchmark
+> ./run_unconstrained_models.sh
+> ./run_synthetic_cmod_expmts.sh
+> ```
+> You can generate each of the figures and tables in the paper using the notebooks in ```./relative_prevalence_benchmark/```. 
+  
 Email divyas@mit.edu if you run into any issues!
