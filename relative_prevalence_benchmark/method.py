@@ -88,7 +88,6 @@ def train_relative_estimator(x_train, s_train, x_val, s_val,
     all_idxs = np.array(list(range(len(x_tensor))))
     
     n_batches = expmt_config['n_batches']
-    print("N Batches: ", n_batches)
     n_to_pad = n_batches - (len(all_idxs) % n_batches)
     all_idxs = np.pad(all_idxs, (0, n_to_pad))
     batch_idxs_list = np.array(all_idxs).reshape((n_batches, -1))

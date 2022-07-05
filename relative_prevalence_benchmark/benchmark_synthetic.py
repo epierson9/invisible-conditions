@@ -14,7 +14,7 @@ from simulation_helpers import generate_g, generate_y, generate_s_scar
 from simulation_helpers import separable_decision_rule_1d, inseparable_decision_rule_1d
 from simulation_helpers import separable_decision_rule_nd, inseparable_decision_rule_nd
 
-from eval_fs import eval_relative_prior
+from eval_fs import eval_PURPLE_relative_priors
 from method import train_relative_estimator, get_loss
 from baselines import cdmm, supervised_rel_prior, sar_em_rel_prior, scar_km2_rel_prior
 
@@ -48,6 +48,7 @@ c2_opts = [.1, .3, .5, .7, .9]
 separability_opts = ['separable', 'overlap', 'overlaid']
 group_gap_opts = [-2, -1, -.5, -.25, 0]
 lamda_opts = [0]
+groups = ['A', 'B']
 
 expmt_type = sys.argv[1]
 method = sys.argv[2]
@@ -78,7 +79,8 @@ for lamda in lamda_opts:
         g2_mean = g1_mean + group_gap
 
         g1_config = {'mean': g1_mean, 'std': std, 'n_samples': n_to_sample_g1, 
-                     'n_attributes': n_attributes, 'n_groups': n_groups, 'group_feat': 1}
+                     'n_attributes': n_attributes, 'n_groups': n_groups, 'group_feat': 1,
+                     'group1_idx': 0}
         g2_config = {'mean': g2_mean, 'std': std, 'n_samples': n_to_sample_g2, 
                      'n_attributes': n_attributes, 'n_groups': n_groups, 'group_feat': 2}
 
@@ -87,7 +89,9 @@ for lamda in lamda_opts:
                         'labeling_frequency_g1': c1, 'labeling_frequency_g2': c2, 
                         'group_gap': group_gap, 'lamda': lamda,
                        'n_groups': n_groups, 'n_attributes': n_attributes, 
-                       'optimizer': 'Adam'} 
+                       'optimizer': 'Adam', 'estimator_type': 'logreg',
+                       'group_weights': [], 'n_epochs': 10000, 
+                       'n_batches': 1} 
         expmt_configs.append((expmt_config, g1_config, g2_config))
 
 ### Iterating over all experiments
@@ -169,63 +173,73 @@ for expmt_config, g1_config, g2_config in tqdm(expmt_configs):
 
         ### Apply each method to the synthetic data
         if method == 'ours':
+            true_g1_prior = y_test[g1_test_idxs].mean()
+            true_g2_prior = y_test[g2_test_idxs].mean()
+            true_rel_prior = true_g1_prior / true_g2_prior
+            true_result_dict = {'true_g1_prior': true_g1_prior, 'true_g2_prior': true_g2_prior,
+                               'true_rel_prior': true_rel_prior}
+    
             f_model, losses, info = train_relative_estimator(x_train, s_train, 
                                                              x_val, s_val,
-                                                             expmt_config, n_epochs=10000)
+                                                             expmt_config, save_model=True)
 
-            pred_rel_prior, pred_g1_prior, pred_g2_prior = eval_relative_prior(x_test, f_model)
+            result_dict_list = eval_PURPLE_relative_priors(x_test, f_model, groups)
+            [result_dict.update(expmt_config) for result_dict in result_dict_list]
+            [result_dict.update(info) for result_dict in result_dict_list]
+            [result_dict.update(true_result_dict) for result_dict in result_dict_list]
+            result_dicts.extend(result_dict_list)
 
-           
-        elif method == 'supervised':
-            results = supervised_rel_prior(x_train[g1_train_idxs], 
-                                           x_train[g2_train_idxs],
-                                           y1_train, y2_train, x_test, g1_config,
-                                           classification_model1, classification_model2)
+        else:
+            if method == 'supervised':
+                results = supervised_rel_prior(x_train[g1_train_idxs], 
+                                               x_train[g2_train_idxs],
+                                               y1_train, y2_train, x_test, g1_config,
+                                               classification_model1, classification_model2)
 
-            pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
+                pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
-        elif method == 'negative':
-            results = supervised_rel_prior(x_train[g1_train_idxs], 
-                                           x_train[g2_train_idxs],
+            elif method == 'negative':
+                results = supervised_rel_prior(x_train[g1_train_idxs], 
+                                               x_train[g2_train_idxs],
+                                               s_train[g1_train_idxs],
+                                               s_train[g2_train_idxs], x_test, g1_config,
+                                               classification_model1, classification_model2)
+
+                pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
+
+            elif method == 'sar-em':
+                results = sar_em_rel_prior(x_train_norm[g1_train_idxs],
+                                           x_train_norm[g2_train_idxs],
                                            s_train[g1_train_idxs],
-                                           s_train[g2_train_idxs], x_test, g1_config,
-                                           classification_model1, classification_model2)
+                                           s_train[g2_train_idxs], x_test_norm, g1_config,
+                                               classification_model1, classification_model2)
 
-            pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
+                pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
-        elif method == 'sar-em':
-            results = sar_em_rel_prior(x_train_norm[g1_train_idxs],
-                                       x_train_norm[g2_train_idxs],
-                                       s_train[g1_train_idxs],
-                                       s_train[g2_train_idxs], x_test_norm, g1_config,
-                                           classification_model1, classification_model2)
+            elif method == 'cdmm':
+                results  = cdmm(x_train_norm[g1_train_idxs], x_train_norm[g2_train_idxs],
+                            s_train[g1_train_idxs], s_train[g2_train_idxs], g1_config)
 
-            pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
+                pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
-        elif method == 'cdmm':
-            results  = cdmm(x_train_norm[g1_train_idxs], x_train_norm[g2_train_idxs],
-                        s_train[g1_train_idxs], s_train[g2_train_idxs], g1_config)
+            elif method == 'scar-km2':
+                results = scar_km2_rel_prior(x1_train, x2_train, s1_train, s2_train)
+                pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
 
-            pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
+            true_g1_prior = y_test[g1_test_idxs].mean()
+            true_g2_prior = y_test[g2_test_idxs].mean()
+            true_rel_prior = true_g1_prior / true_g2_prior
 
-        elif method == 'scar-km2':
-            results = scar_km2_rel_prior(x1_train, x2_train, s1_train, s2_train)
-            pred_rel_prior, pred_g1_prior, pred_g2_prior, _ = results
-
-        true_g1_prior = y_test[g1_test_idxs].mean()
-        true_g2_prior = y_test[g2_test_idxs].mean()
-        true_rel_prior = true_g1_prior / true_g2_prior
-
-        result_dict = {'pred_rel_prior': pred_rel_prior, 'true_rel_prior': true_rel_prior, 
-                       'rel_prior_err': true_rel_prior - pred_rel_prior,
-                       'pred_g1_prior': pred_g1_prior, 'pred_g2_prior': pred_g2_prior,
-                       'true_g1_prior': true_g1_prior, 'true_g2_prior': true_g2_prior,
-                       'method': method, 'run': run}
-        result_dict.update(**{"g1_" + k: v for k, v in g1_config.items()})
-        result_dict.update(**{"g2_" + k: v for k, v in g2_config.items()})
-        result_dict.update(expmt_config)
-        result_dict.update(info)
-        result_dicts.append(result_dict)
+            result_dict = {'pred_rel_prior': pred_rel_prior, 'true_rel_prior': true_rel_prior, 
+                           'rel_prior_err': true_rel_prior - pred_rel_prior,
+                           'pred_g1_prior': pred_g1_prior, 'pred_g2_prior': pred_g2_prior,
+                           'true_g1_prior': true_g1_prior, 'true_g2_prior': true_g2_prior,
+                           'method': method, 'run': run}
+            result_dict.update(**{"g1_" + k: v for k, v in g1_config.items()})
+            result_dict.update(**{"g2_" + k: v for k, v in g2_config.items()})
+            result_dict.update(expmt_config)
+            result_dict.update(info)
+            result_dicts.append(result_dict)
 
         results_df = pd.DataFrame(result_dicts)
         results_df.to_csv(results_f_name)

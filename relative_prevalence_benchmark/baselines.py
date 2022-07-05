@@ -50,7 +50,7 @@ def supervised_rel_prior(x1_train, x2_train, y1_train, y2_train, x_test,
     
     pred_rel_prior, pred_g1_prior, pred_g2_prior = eval_relative_prior(x_test, f1_model, f2_model, 
                                                                        group1_idx=expmt_config['group1_idx'],
-                                                                       n_groups=expmt_config['n_groups'])
+                                                                       n_groups=n_groups)
     return pred_rel_prior, pred_g1_prior, pred_g2_prior, (f1_model, f2_model)
 
 def sar_em_rel_prior(x1_train, x2_train, s1_train, s2_train, x_test, 
@@ -70,7 +70,7 @@ def sar_em_rel_prior(x1_train, x2_train, s1_train, s2_train, x_test,
     
     pred_rel_prior, pred_g1_prior, pred_g2_prior = eval_relative_prior(x_test, f1_model, f2_model, 
                                                                        group1_idx=expmt_config['group1_idx'],
-                                                                       n_groups=expmt_config['n_groups'])
+                                                                       n_groups=n_groups)
     return pred_rel_prior, pred_g1_prior, pred_g2_prior, (f1_model, f2_model)
 
 def scar_km2_rel_prior(x1_train, x2_train, s1_train, s2_train):
