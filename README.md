@@ -8,7 +8,7 @@ Methods for quantifying prevalence of underreported medical conditions like IPV.
      3. Generate  each of the semi-synthetic dataset by running each of the following notebooks: "Generate Random Semi-Simulated Data.ipynb", "Generate Endometriosis Correlation Data.ipynb", "Generate IPV Semi-Simulated Data.ipynb", all under ```./MIMIC_notebooks```.
      4. Generate the real dataset by running the following notebook: "./MIMIC_notebooks/Generate Real IPV Data.ipynb".
 2. Content Moderation data.
-     1. Download the pre-trained model, trained via ERM, from [this link]> (https://worksheets.codalab.org/rest/bundles/0xb820ddc4bdc44c0d9e298c0eb51335a3/contents/blob/best_model.pth). Store "best_model.pth" in the ```./WILDS_notebooks``` folder.
+     1. Download the pre-trained model, trained via ERM, from [this link](https://worksheets.codalab.org/rest/bundles/0xb820ddc4bdc44c0d9e298c0eb51335a3/contents/blob/best_model.pth). Store "best_model.pth" in the ```./WILDS_notebooks``` folder.
     2. Generate the CivilComments dataset by running the following notebook: "./WILDS_notebooks/Preprocess CivilComments Dataset.ipynb".
    3. Set global paths to the results, models, and figure directories in ```relative_prevalence_benchmark/paths.py```.
 
