@@ -1,7 +1,30 @@
 # invisible_conditions
 Methods for quantifying prevalence of underreported medical conditions like IPV. 
 
-### Download and preprocess data.
+### Install dependencies.
+
+All code was tested using Python 3.9.6. I recommend installing [mamba](https://github.com/mamba-org/mamba) to speed up installation, but you can substitute conda in just fine. Run the following commands from the root directory to install required dependencies (~5-10 minutes):
+
+```
+mamba env create --name purple --file=purple_environment.yml
+source activate purple
+git clone https://github.com/ML-KULeuven/SAR-PU
+cat requirements.txt | xargs -n 1 pip install
+```
+
+Once you have run these commands, you will want to complete installation of the SAR-PU library by following the instructions at [this link](https://github.com/ML-KULeuven/SAR-PU).
+
+### Run minimal, synthetic example.
+
+You can compare PURPLE to the baselines on a completely synthetic dataset by running:
+
+```
+./run_synthetic_expmts.sh
+```
+
+from the ```relative_prevalence_benchmark``` directory.
+
+### Download and preprocess data for case studies.
 1. Intimate Partner Violence data. 
     1. Download data from [MIMIC-IV](https://physionet.org/content/mimiciv/0.4/) and [MIMIC-IV ED](https://physionet.org/content/mimic-iv-ed/1.0/). You will need to complete training in order to access both.
      2. Set paths for MIMIC-IV and MIMIC-IV ED in the file ```./MIMIC_notebooks/mimic_paths.py```.
@@ -11,12 +34,6 @@ Methods for quantifying prevalence of underreported medical conditions like IPV.
      1. Download the pre-trained model, trained via ERM, from [this link](https://worksheets.codalab.org/rest/bundles/0xb820ddc4bdc44c0d9e298c0eb51335a3/contents/blob/best_model.pth). Store "best_model.pth" in the ```./WILDS_notebooks``` folder.
     2. Generate the CivilComments dataset by running the following notebook: "./WILDS_notebooks/Preprocess CivilComments Dataset.ipynb".
    3. Set global paths to the results, models, and figure directories in ```relative_prevalence_benchmark/paths.py```.
-
-### Install required libraries.
-
- 1. Clone the [SAR-PU library](https://github.com/ML-KULeuven/SAR-PU) into root folder, and follow the repo's instructions to install the required libraries.
- 2. Create a conda environment and install the packages in requirements.txt by running 
- ``` conda create -n <environment-name> --file requirements.txt ```
 
 ### Reproduce experiments and figures.
 
