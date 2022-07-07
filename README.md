@@ -27,7 +27,7 @@ You can compare PURPLE to the baselines on a completely synthetic dataset by run
 ./run_synthetic_expmts.sh
 ```
 
-from the ```relative_prevalence_benchmark``` directory.
+from the ```relative_prevalence_benchmark``` directory. Running all baselines (recreating Figure 2) takes about one hour. Running PURPLE on its own takes about 10 minutes.
 
 ### Download and preprocess data for case studies.
 1. Intimate Partner Violence data. 
