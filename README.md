@@ -10,9 +10,14 @@ mamba env create --name purple --file=purple_environment.yml
 source activate purple
 git clone https://github.com/ML-KULeuven/SAR-PU
 cat requirements.txt | xargs -n 1 pip install
+cd SAR-PU
+pip install -e sarpu
+python make_km_lib.py
+pip install -e lib/tice
+pip install -e lib/km
 ```
 
-Once you have run these commands, you will want to complete installation of the SAR-PU library by following the instructions at [this link](https://github.com/ML-KULeuven/SAR-PU).
+Once you have run these commands, you will want to set paths for the figures, results, and models in ```relative_prevalence_benchmark/paths.py```.
 
 ### Run minimal, synthetic example.
 
