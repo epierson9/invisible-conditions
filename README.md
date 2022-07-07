@@ -21,13 +21,9 @@ Once you have run these commands, you will want to set paths for the figures, re
 
 ### Run minimal, synthetic example.
 
-You can compare PURPLE to the baselines on a completely synthetic dataset by running:
+⚡️ Quick option (2 minutes): Compare PURPLE to the baselines on a completely synthetic dataset in this notebook: ```relative_prevalence_benchmark/Minimal Example.ipynb```. 
 
-```
-./run_synthetic_expmts.sh
-```
-
-from the ```relative_prevalence_benchmark``` directory. Running all baselines (recreating Figure 2) takes about one hour. Running PURPLE on its own takes about 10 minutes.
+⏰ Slow option (~1 hour): Reproduce Figure 2 by running ```./run_synthetic_expmts.sh``` from the ```relative_prevalence_benchmark``` directory.
 
 ### Download and preprocess data for case studies.
 1. Intimate Partner Violence data. 
