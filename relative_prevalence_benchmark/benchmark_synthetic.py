@@ -21,6 +21,7 @@ from baselines import cdmm, supervised_rel_prior, sar_em_rel_prior, scar_km2_rel
 from baseline_params import penalty, solver, fit_intercept
 
 from gpu_utils import restrict_GPU_pytorch
+from paths import RESULTS_DIR 
 restrict_GPU_pytorch(sys.argv[3])
 np.random.seed(42)
 
@@ -58,16 +59,16 @@ methods = [method]
 
 if expmt_type ==  'group_gap':
         all_combinations = [(c2_default, separability_default, group_gap_opt) for group_gap_opt in group_gap_opts]
-        results_f_name = 'results/group_gap_' + method + '_results'
+        results_f_name = RESULTS_DIR + 'group_gap_' + method + '_results'
 elif expmt_type == 'separability':
     all_combinations = [(c2_default, separability_opt, group_gap_default) for separability_opt in separability_opts]
-    results_f_name = 'results/separability_' + method + '_results'
+    results_f_name = RESULTS_DIR + 'separability_' + method + '_results'
     if n_attributes == 1:
-        results_f_name = 'results/separability_' + method + '_results_1d'
+        results_f_name = RESULTS_DIR + 'separability_' + method + '_results_1d'
 
 elif expmt_type == 'label_freq':
     all_combinations = [(c2_opt, separability_default, group_gap_default) for c2_opt in c2_opts]
-    results_f_name = 'results/label_freq_' + method + '_results'
+    results_f_name = RESULTS_DIR + 'label_freq_' + method + '_results'
 
 ### Creating group configurations based on each experiment config
 
