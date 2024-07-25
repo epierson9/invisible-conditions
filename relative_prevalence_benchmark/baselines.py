@@ -1,10 +1,3 @@
-from rpy2.robjects import pandas2ri
-import rpy2.robjects as robjects
-import rpy2.robjects.numpy2ri
-from rpy2.rinterface import SexpVector
-import rpy2.robjects.packages as rpackages
-from rpy2.robjects.packages import importr
-from rpy2.robjects.vectors import StrVector
 import pdb
 import numpy as np
 
